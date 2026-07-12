@@ -3,36 +3,36 @@ package starlight_lnk.camerainertia.client;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.animal.camel.Camel;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.monster.Strider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
+import net.minecraft.world.entity.vehicle.boat.Boat;
 import net.minecraft.world.phys.Vec3;
 import starlight_lnk.camerainertia.config.ClientConfig;
 
 /**
- * Инерция камеры при езде на транспорте:
- *  - Лодка     → волны + ритм гребли вёслами
- *  - Лошадь    → RDR2-style FPP: двойной такт галопа, без крена, лёгкий yaw-свинг
- *  - Верблюд   → мягче, амплитуднее
- *  - Свинья/Стрейдер → лёгкое покачивание
- *  - Вагонетка → толчки на поворотах
- *  - Иное      → универсальная инерция
+ * РРЅРµСЂС†РёСЏ РєР°РјРµСЂС‹ РїСЂРё РµР·РґРµ РЅР° С‚СЂР°РЅСЃРїРѕСЂС‚Рµ:
+ *  - Р›РѕРґРєР°     в†’ РІРѕР»РЅС‹ + СЂРёС‚Рј РіСЂРµР±Р»Рё РІС‘СЃР»Р°РјРё
+ *  - Р›РѕС€Р°РґСЊ    в†’ RDR2-style FPP: РґРІРѕР№РЅРѕР№ С‚Р°РєС‚ РіР°Р»РѕРїР°, Р±РµР· РєСЂРµРЅР°, Р»С‘РіРєРёР№ yaw-СЃРІРёРЅРі
+ *  - Р’РµСЂР±Р»СЋРґ   в†’ РјСЏРіС‡Рµ, Р°РјРїР»РёС‚СѓРґРЅРµРµ
+ *  - РЎРІРёРЅСЊСЏ/РЎС‚СЂРµР№РґРµСЂ в†’ Р»С‘РіРєРѕРµ РїРѕРєР°С‡РёРІР°РЅРёРµ
+ *  - Р’Р°РіРѕРЅРµС‚РєР° в†’ С‚РѕР»С‡РєРё РЅР° РїРѕРІРѕСЂРѕС‚Р°С…
+ *  - РРЅРѕРµ      в†’ СѓРЅРёРІРµСЂСЃР°Р»СЊРЅР°СЏ РёРЅРµСЂС†РёСЏ
  *
- * 🆕 Также предоставляет getPedestrianMultiplier() — коэффициент, на который
- * домножается «пешеходная» инерция игрока (CameraMovementController) на транспорте.
+ * рџ†• РўР°РєР¶Рµ РїСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ getPedestrianMultiplier() вЂ” РєРѕСЌС„С„РёС†РёРµРЅС‚, РЅР° РєРѕС‚РѕСЂС‹Р№
+ * РґРѕРјРЅРѕР¶Р°РµС‚СЃСЏ В«РїРµС€РµС…РѕРґРЅР°СЏВ» РёРЅРµСЂС†РёСЏ РёРіСЂРѕРєР° (CameraMovementController) РЅР° С‚СЂР°РЅСЃРїРѕСЂС‚Рµ.
  *
- * 🎥 Работает только в 1st person — в 3rd person весь эффект полностью отключается.
+ * рџЋҐ Р Р°Р±РѕС‚Р°РµС‚ С‚РѕР»СЊРєРѕ РІ 1st person вЂ” РІ 3rd person РІРµСЃСЊ СЌС„С„РµРєС‚ РїРѕР»РЅРѕСЃС‚СЊСЋ РѕС‚РєР»СЋС‡Р°РµС‚СЃСЏ.
  */
 public class CameraVehicleController {
 
-    // 🔧 Глобальный множитель крена для ЛОДКИ
+    // рџ”§ Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ РјРЅРѕР¶РёС‚РµР»СЊ РєСЂРµРЅР° РґР»СЏ Р›РћР”РљР
     private static final float BOAT_ROLL_SCALE = 0.25F;
 
-    // 🆕 === КОЭФФИЦИЕНТЫ ОСЛАБЛЕНИЯ "ПЕШЕХОДНОЙ" ИНЕРЦИИ ИГРОКА ===
+    // рџ†• === РљРћР­Р¤Р¤РР¦РР•РќРўР« РћРЎР›РђР‘Р›Р•РќРРЇ "РџР•РЁР•РҐРћР”РќРћР™" РРќР•Р Р¦РР РР“Р РћРљРђ ===
     private static final float PEDESTRIAN_MUL_HORSE    = 0.30F;
     private static final float PEDESTRIAN_MUL_CAMEL    = 0.25F;
     private static final float PEDESTRIAN_MUL_BOAT     = 0.10F;
@@ -40,7 +40,7 @@ public class CameraVehicleController {
     private static final float PEDESTRIAN_MUL_PIGLIKE  = 0.40F;
     private static final float PEDESTRIAN_MUL_DEFAULT  = 0.35F;
 
-    // === ИТОГОВОЕ СМЕЩЕНИЕ ===
+    // === РРўРћР“РћР’РћР• РЎРњР•Р©Р•РќРР• ===
     private static float pitchOffset = 0.0F;
     private static float yawOffset   = 0.0F;
     private static float rollOffset  = 0.0F;
@@ -49,23 +49,23 @@ public class CameraVehicleController {
     private static float prevYawOffset   = 0.0F;
     private static float prevRollOffset  = 0.0F;
 
-    // === ВНУТРЕННИЕ КАНАЛЫ ===
+    // === Р’РќРЈРўР Р•РќРќРР• РљРђРќРђР›Р« ===
     private static float pitchVel = 0.0F;
     private static float yawVel   = 0.0F;
     private static float rollVel  = 0.0F;
 
-    // === ОСЦИЛЛЯЦИЯ (волны/общая) ===
+    // === РћРЎР¦РР›Р›РЇР¦РРЇ (РІРѕР»РЅС‹/РѕР±С‰Р°СЏ) ===
     private static float oscPhase = 0.0F;
 
-    // === ФАЗА ГРЕБЛИ (лодка) ===
+    // === Р¤РђР—Рђ Р“Р Р•Р‘Р›Р (Р»РѕРґРєР°) ===
     private static float rowPhase    = 0.0F;
     private static float rowSpeed    = 0.0F;
 
-    // 🐎 === ФАЗА АЛЛЮРА (лошадь, RDR2-style) ===
+    // рџђЋ === Р¤РђР—Рђ РђР›Р›Р®Р Рђ (Р»РѕС€Р°РґСЊ, RDR2-style) ===
     private static float gaitPhase   = 0.0F;
     private static float gaitSpeed   = 0.0F;
 
-    // === ПАМЯТЬ ===
+    // === РџРђРњРЇРўР¬ ===
     private static Vec3    prevMotion       = Vec3.ZERO;
     private static float   prevVehicleYaw   = 0.0F;
     private static boolean prevHadVehicle   = false;
@@ -82,10 +82,10 @@ public class CameraVehicleController {
     }
 
     /**
-     * 🆕 Возвращает коэффициент, на который надо домножать «пешеходную» инерцию игрока
-     * (CameraMovementController), когда тот сидит на транспорте.
+     * рџ†• Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕСЌС„С„РёС†РёРµРЅС‚, РЅР° РєРѕС‚РѕСЂС‹Р№ РЅР°РґРѕ РґРѕРјРЅРѕР¶Р°С‚СЊ В«РїРµС€РµС…РѕРґРЅСѓСЋВ» РёРЅРµСЂС†РёСЋ РёРіСЂРѕРєР°
+     * (CameraMovementController), РєРѕРіРґР° С‚РѕС‚ СЃРёРґРёС‚ РЅР° С‚СЂР°РЅСЃРїРѕСЂС‚Рµ.
      *
-     * @return 1.0 если не на транспорте; иначе значение из PEDESTRIAN_MUL_*
+     * @return 1.0 РµСЃР»Рё РЅРµ РЅР° С‚СЂР°РЅСЃРїРѕСЂС‚Рµ; РёРЅР°С‡Рµ Р·РЅР°С‡РµРЅРёРµ РёР· PEDESTRIAN_MUL_*
      */
     public static float getPedestrianMultiplier() {
         try {
@@ -121,9 +121,9 @@ public class CameraVehicleController {
                 return;
             }
 
-            // 🎥 Только в 1st person — в 3rd person полностью гасим эффект транспорта.
-            // Память состояния (prevMotion / prevVehicleYaw / prevVehicleOnGnd / prevVehicleY)
-            // всё равно обновляем, чтобы при возврате в 1st person не «дёрнуло» от старых данных.
+            // рџЋҐ РўРѕР»СЊРєРѕ РІ 1st person вЂ” РІ 3rd person РїРѕР»РЅРѕСЃС‚СЊСЋ РіР°СЃРёРј СЌС„С„РµРєС‚ С‚СЂР°РЅСЃРїРѕСЂС‚Р°.
+            // РџР°РјСЏС‚СЊ СЃРѕСЃС‚РѕСЏРЅРёСЏ (prevMotion / prevVehicleYaw / prevVehicleOnGnd / prevVehicleY)
+            // РІСЃС‘ СЂР°РІРЅРѕ РѕР±РЅРѕРІР»СЏРµРј, С‡С‚РѕР±С‹ РїСЂРё РІРѕР·РІСЂР°С‚Рµ РІ 1st person РЅРµ В«РґС‘СЂРЅСѓР»РѕВ» РѕС‚ СЃС‚Р°СЂС‹С… РґР°РЅРЅС‹С….
             if (!CameraViewUtils.isFirstPerson()) {
                 Player p = mc.player;
                 Entity v = p.getVehicle();
@@ -167,7 +167,7 @@ public class CameraVehicleController {
             double  vehY        = vehicle.getY();
 
             // ===========================================================
-            // КИВОК ПРИ УСКОРЕНИИ/ТОРМОЖЕНИИ (общее)
+            // РљРР’РћРљ РџР Р РЈРЎРљРћР Р•РќРР/РўРћР РњРћР–Р•РќРР (РѕР±С‰РµРµ)
             // ===========================================================
             if (horizSpeed > 0.01 && dHoriz > 0.005) {
                 Vec3 dir = motion.normalize();
@@ -177,7 +177,7 @@ public class CameraVehicleController {
             }
 
             // ===========================================================
-            // ПОВОРОТ → ROLL
+            // РџРћР’РћР РћРў в†’ ROLL
             // ===========================================================
             if (Math.abs(dYaw) > 0.05F) {
                 if (isHorse) {
@@ -192,7 +192,7 @@ public class CameraVehicleController {
             }
 
             // ===========================================================
-            // СПЕЦИФИКА ПО ТИПУ ТРАНСПОРТА
+            // РЎРџР•Р¦РР¤РРљРђ РџРћ РўРРџРЈ РўР РђРќРЎРџРћР РўРђ
             // ===========================================================
             float oscPitchAmp = 0.0F;
             float oscRollAmp  = 0.0F;
@@ -309,7 +309,7 @@ public class CameraVehicleController {
             }
 
             // ===========================================================
-            // ОСЦИЛЛЯЦИЯ (общая, НЕ для лошади)
+            // РћРЎР¦РР›Р›РЇР¦РРЇ (РѕР±С‰Р°СЏ, РќР• РґР»СЏ Р»РѕС€Р°РґРё)
             // ===========================================================
             oscPhase += oscSpeed;
             if (oscPhase > (float)(Math.PI * 2)) oscPhase -= (float)(Math.PI * 2);
@@ -318,7 +318,7 @@ public class CameraVehicleController {
             float oscRoll  = Mth.sin(oscPhase * 0.5F)  * oscRollAmp  * strength;
 
             // ===========================================================
-            // ИНТЕГРАЦИЯ
+            // РРќРўР•Р“Р РђР¦РРЇ
             // ===========================================================
             prevPitchOffset = pitchOffset;
             prevYawOffset   = yawOffset;

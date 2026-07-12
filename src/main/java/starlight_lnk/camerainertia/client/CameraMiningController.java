@@ -1,10 +1,10 @@
 package starlight_lnk.camerainertia.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -42,7 +42,7 @@ public class CameraMiningController {
             if (!mc.options.keyAttack.isDown())              { fadeOut(); resetState(); return; }
 
             ItemStack mainHand = player.getMainHandItem();
-            if (!(mainHand.getItem() instanceof PickaxeItem)) { fadeOut(); resetState(); return; }
+            if (!mainHand.is(ItemTags.PICKAXES)) { fadeOut(); resetState(); return; }
 
             if (mc.hitResult == null || mc.hitResult.getType() != HitResult.Type.BLOCK) {
                 fadeOut(); resetState(); return;

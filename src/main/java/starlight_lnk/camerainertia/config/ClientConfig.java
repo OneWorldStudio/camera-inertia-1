@@ -1,70 +1,70 @@
 package starlight_lnk.camerainertia.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import java.util.Arrays;
 import java.util.List;
 
 public class ClientConfig {
-    public static final ForgeConfigSpec SPEC;
+    public static final ModConfigSpec SPEC;
 
     public enum Preset {
         CLASSIC, SHOOTER, REALISM, DRUNKARD, CUSTOM
     }
 
-    public static final ForgeConfigSpec.EnumValue<Preset> ACTIVE_PRESET;
-    public static final ForgeConfigSpec.BooleanValue ENABLED;
-    public static final ForgeConfigSpec.BooleanValue FIRST_PERSON_BODY_ENABLED;
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_BLACKLIST;
+    public static final ModConfigSpec.EnumValue<Preset> ACTIVE_PRESET;
+    public static final ModConfigSpec.BooleanValue ENABLED;
+    public static final ModConfigSpec.BooleanValue FIRST_PERSON_BODY_ENABLED;
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_BLACKLIST;
 
-    public static final ForgeConfigSpec.BooleanValue MOVEMENT_ANIMATIONS_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue MOVEMENT_INTENSITY;
-    public static final ForgeConfigSpec.DoubleValue STRAFE_ROLL_INTENSITY;
+    public static final ModConfigSpec.BooleanValue MOVEMENT_ANIMATIONS_ENABLED;
+    public static final ModConfigSpec.DoubleValue MOVEMENT_INTENSITY;
+    public static final ModConfigSpec.DoubleValue STRAFE_ROLL_INTENSITY;
 
-    public static final ForgeConfigSpec.BooleanValue FALL_SHAKE_ENABLED;
-    public static final ForgeConfigSpec.IntValue FALL_SHAKE_THRESHOLD_TICKS;
-    public static final ForgeConfigSpec.DoubleValue FALL_SHAKE_STRENGTH;
+    public static final ModConfigSpec.BooleanValue FALL_SHAKE_ENABLED;
+    public static final ModConfigSpec.IntValue FALL_SHAKE_THRESHOLD_TICKS;
+    public static final ModConfigSpec.DoubleValue FALL_SHAKE_STRENGTH;
 
-    public static final ForgeConfigSpec.BooleanValue TURN_ANIMATIONS_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue TURN_INTENSITY;
+    public static final ModConfigSpec.BooleanValue TURN_ANIMATIONS_ENABLED;
+    public static final ModConfigSpec.DoubleValue TURN_INTENSITY;
 
-    public static final ForgeConfigSpec.BooleanValue ITEM_ANIMATIONS_ENABLED;
+    public static final ModConfigSpec.BooleanValue ITEM_ANIMATIONS_ENABLED;
 
-    // === ОБЩИЙ ЗУМ ДЛЯ ОРУЖИЯ (Лук, Арбалет, Трезубец) ===
-    public static final ForgeConfigSpec.BooleanValue WEAPON_ZOOM_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue WEAPON_ZOOM_STRENGTH;
+    // === РћР‘Р©РР™ Р—РЈРњ Р”Р›РЇ РћР РЈР–РРЇ (Р›СѓРє, РђСЂР±Р°Р»РµС‚, РўСЂРµР·СѓР±РµС†) ===
+    public static final ModConfigSpec.BooleanValue WEAPON_ZOOM_ENABLED;
+    public static final ModConfigSpec.DoubleValue WEAPON_ZOOM_STRENGTH;
 
-    public static final ForgeConfigSpec.BooleanValue MINING_INERTIA_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue MINING_INERTIA_STRENGTH;
-    public static final ForgeConfigSpec.BooleanValue VEHICLE_INERTIA_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue VEHICLE_INERTIA_STRENGTH;
-    public static final ForgeConfigSpec.BooleanValue VEHICLE_BOAT_WAVES;
-    public static final ForgeConfigSpec.BooleanValue VEHICLE_BOAT_ROWING;
-    public static final ForgeConfigSpec.DoubleValue VEHICLE_BOAT_ROWING_STRENGTH;
+    public static final ModConfigSpec.BooleanValue MINING_INERTIA_ENABLED;
+    public static final ModConfigSpec.DoubleValue MINING_INERTIA_STRENGTH;
+    public static final ModConfigSpec.BooleanValue VEHICLE_INERTIA_ENABLED;
+    public static final ModConfigSpec.DoubleValue VEHICLE_INERTIA_STRENGTH;
+    public static final ModConfigSpec.BooleanValue VEHICLE_BOAT_WAVES;
+    public static final ModConfigSpec.BooleanValue VEHICLE_BOAT_ROWING;
+    public static final ModConfigSpec.DoubleValue VEHICLE_BOAT_ROWING_STRENGTH;
 
-    public static final ForgeConfigSpec.BooleanValue PERSPECTIVE_TRANSITION_ENABLED;
-    public static final ForgeConfigSpec.IntValue PERSPECTIVE_TRANSITION_DURATION;
+    public static final ModConfigSpec.BooleanValue PERSPECTIVE_TRANSITION_ENABLED;
+    public static final ModConfigSpec.IntValue PERSPECTIVE_TRANSITION_DURATION;
 
-    public static final ForgeConfigSpec.BooleanValue MOTION_BLUR_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_SENSITIVITY;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_MAX_INTENSITY;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_SMOOTHING;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_DEADZONE;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_FULL_MOTION;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_CURVE_POWER;
-    public static final ForgeConfigSpec.BooleanValue MOTION_BLUR_OPPOSITE_SIDE;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_ATTACK_MULTIPLIER;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_RELEASE_MULTIPLIER;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_SIDE_START;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_SIDE_END;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_EDGE_POWER;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_PIXELS;
-    public static final ForgeConfigSpec.DoubleValue MOTION_BLUR_CHROMA_PIXELS;
+    public static final ModConfigSpec.BooleanValue MOTION_BLUR_ENABLED;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_SENSITIVITY;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_MAX_INTENSITY;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_SMOOTHING;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_DEADZONE;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_FULL_MOTION;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_CURVE_POWER;
+    public static final ModConfigSpec.BooleanValue MOTION_BLUR_OPPOSITE_SIDE;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_ATTACK_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_RELEASE_MULTIPLIER;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_SIDE_START;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_SIDE_END;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_EDGE_POWER;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_PIXELS;
+    public static final ModConfigSpec.DoubleValue MOTION_BLUR_CHROMA_PIXELS;
 
-    public static final ForgeConfigSpec.BooleanValue FALL_BLUR_ENABLED;
-    public static final ForgeConfigSpec.DoubleValue FALL_BLUR_STRENGTH;
+    public static final ModConfigSpec.BooleanValue FALL_BLUR_ENABLED;
+    public static final ModConfigSpec.DoubleValue FALL_BLUR_STRENGTH;
 
     static {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         ACTIVE_PRESET = builder.comment("Current active preset").defineEnum("activePreset", Preset.REALISM);
         ENABLED = builder.define("enabled", true);
@@ -96,7 +96,7 @@ public class ClientConfig {
         builder.push("items");
         ITEM_ANIMATIONS_ENABLED = builder.define("itemAnimationsEnabled", true);
         WEAPON_ZOOM_ENABLED = builder.define("weaponZoomEnabled", true);
-        // Лимит 1.0 (ощущается приятно, не читерно)
+        // Р›РёРјРёС‚ 1.0 (РѕС‰СѓС‰Р°РµС‚СЃСЏ РїСЂРёСЏС‚РЅРѕ, РЅРµ С‡РёС‚РµСЂРЅРѕ)
         WEAPON_ZOOM_STRENGTH = builder.defineInRange("weaponZoomStrength", 0.5, 0.0, 1.0);
         builder.pop();
 
@@ -156,7 +156,7 @@ public class ClientConfig {
 
                 WEAPON_ZOOM_ENABLED.set(false);
 
-                // ЖЕЛЕЗОБЕТОННЫЙ ФИКС КЛАССИКИ (все силы в 0.0)
+                // Р–Р•Р›Р•Р—РћР‘Р•РўРћРќРќР«Р™ Р¤РРљРЎ РљР›РђРЎРЎРРљР (РІСЃРµ СЃРёР»С‹ РІ 0.0)
                 MOVEMENT_INTENSITY.set(0.0);
                 STRAFE_ROLL_INTENSITY.set(0.0);
                 TURN_INTENSITY.set(0.0);
@@ -170,7 +170,7 @@ public class ClientConfig {
                 ITEM_ANIMATIONS_ENABLED.set(true);
 
                 WEAPON_ZOOM_ENABLED.set(true);
-                WEAPON_ZOOM_STRENGTH.set(0.2); // Легкий зум
+                WEAPON_ZOOM_STRENGTH.set(0.2); // Р›РµРіРєРёР№ Р·СѓРј
 
                 MOVEMENT_ANIMATIONS_ENABLED.set(true); MOVEMENT_INTENSITY.set(0.2);
                 STRAFE_ROLL_INTENSITY.set(0.25);
@@ -190,7 +190,7 @@ public class ClientConfig {
                 ITEM_ANIMATIONS_ENABLED.set(true);
 
                 WEAPON_ZOOM_ENABLED.set(true);
-                WEAPON_ZOOM_STRENGTH.set(0.5); // Средний зум
+                WEAPON_ZOOM_STRENGTH.set(0.5); // РЎСЂРµРґРЅРёР№ Р·СѓРј
 
                 MOVEMENT_ANIMATIONS_ENABLED.set(true); MOVEMENT_INTENSITY.set(0.15);
                 STRAFE_ROLL_INTENSITY.set(0.15);
@@ -210,7 +210,7 @@ public class ClientConfig {
                 ITEM_ANIMATIONS_ENABLED.set(true);
 
                 WEAPON_ZOOM_ENABLED.set(true);
-                WEAPON_ZOOM_STRENGTH.set(0.5); // ТАКОЙ ЖЕ КАК В РЕАЛИЗМЕ! (Раньше было 1.0)
+                WEAPON_ZOOM_STRENGTH.set(0.5); // РўРђРљРћР™ Р–Р• РљРђРљ Р’ Р Р•РђР›РР—РњР•! (Р Р°РЅСЊС€Рµ Р±С‹Р»Рѕ 1.0)
 
                 MOVEMENT_ANIMATIONS_ENABLED.set(true); MOVEMENT_INTENSITY.set(2.0);
                 STRAFE_ROLL_INTENSITY.set(3.0);

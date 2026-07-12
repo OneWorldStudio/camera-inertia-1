@@ -2,6 +2,7 @@ package starlight_lnk.camerainertia.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
@@ -193,13 +194,14 @@ public class CameraCombatController {
     // --- УНИВЕРСАЛЬНАЯ ПРОВЕРКА ОРУЖИЯ БЛИЖНЕГО БОЯ ---
     private static boolean isMeleeWeapon(ItemStack stack) {
         if (stack == null || stack.isEmpty()) return false;
+
+        if (stack.is(ItemTags.SWORDS) || stack.is(ItemTags.AXES) || stack.getItem() instanceof TridentItem) {
+            return true;
+        }
+
         Item item = stack.getItem();
 
         return MELEE_WEAPON_CACHE.computeIfAbsent(item, i -> {
-            if (i instanceof SwordItem || i instanceof TridentItem || i instanceof AxeItem) {
-                return true;
-            }
-
             // Проверка интерфейсов для модов (например LrTactical IMeleeWeapon)
             for (Class<?> iface : i.getClass().getInterfaces()) {
                 if (iface.getName().contains("IMeleeWeapon")) {
@@ -241,7 +243,8 @@ public class CameraCombatController {
         // Проверяем, не оружие ли это? (Используем наш кэшированный метод)
         if (isMeleeWeapon(stack)) return false;
 
-        if (item instanceof DiggerItem)     return false;
+        if (stack.is(ItemTags.PICKAXES))    return false;
+        if (stack.is(ItemTags.AXES))        return false;
         if (item instanceof BowItem)        return false;
         if (item instanceof CrossbowItem)   return false;
         if (item instanceof ShieldItem)     return false;

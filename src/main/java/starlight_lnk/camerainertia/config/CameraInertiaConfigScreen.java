@@ -2,6 +2,7 @@ package starlight_lnk.camerainertia.config;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class CameraInertiaConfigScreen extends BaseConfigScreen {
@@ -63,23 +64,23 @@ public class CameraInertiaConfigScreen extends BaseConfigScreen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (resetButton != null && resetButton.isMouseOver(mouseX, mouseY) && button == 0) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (resetButton != null && resetButton.isMouseOver(event.x(), event.y()) && event.button() == 0) {
             isResetHeld = true;
             resetHoldTicks = 0;
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == 0 && isResetHeld) {
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (event.button() == 0 && isResetHeld) {
             isResetHeld = false;
             resetHoldTicks = 0;
             resetButton.setMessage(Component.translatable("camerainertia.config.reset"));
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 
     @Override

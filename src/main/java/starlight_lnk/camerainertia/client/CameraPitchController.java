@@ -1,21 +1,21 @@
 package starlight_lnk.camerainertia.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.phys.Vec3;
 import starlight_lnk.camerainertia.config.ClientConfig;
 
 /**
- * 🎥 Контроллер pitch-смещения камеры.
- * Полностью синхронизирован с конфигом: в Классическом режиме отключен!
+ * рџЋҐ РљРѕРЅС‚СЂРѕР»Р»РµСЂ pitch-СЃРјРµС‰РµРЅРёСЏ РєР°РјРµСЂС‹.
+ * РџРѕР»РЅРѕСЃС‚СЊСЋ СЃРёРЅС…СЂРѕРЅРёР·РёСЂРѕРІР°РЅ СЃ РєРѕРЅС„РёРіРѕРј: РІ РљР»Р°СЃСЃРёС‡РµСЃРєРѕРј СЂРµР¶РёРјРµ РѕС‚РєР»СЋС‡РµРЅ!
  */
 public class CameraPitchController {
 
@@ -23,7 +23,7 @@ public class CameraPitchController {
     private static float prevPitch    = 0.0F;
 
     // ============================================================
-    //   КАНАЛ ПРУЖИНЫ
+    //   РљРђРќРђР› РџР РЈР–РРќР«
     // ============================================================
 
     private static float springPos = 0.0F;
@@ -34,7 +34,7 @@ public class CameraPitchController {
     private static final float SPRING_MAX_DEG = 8.0F;
 
     // ============================================================
-    //   ОСТАЛЬНЫЕ КАНАЛЫ
+    //   РћРЎРўРђР›Р¬РќР«Р• РљРђРќРђР›Р«
     // ============================================================
 
     private static float attackPitch  = 0.0F;
@@ -48,7 +48,7 @@ public class CameraPitchController {
     private static int   useTickCounter = 0;
 
     // ============================================================
-    //   СОСТОЯНИЕ ИГРОКА
+    //   РЎРћРЎРўРћРЇРќРР• РР“Р РћРљРђ
     // ============================================================
 
     private static boolean wasOnGround = true;
@@ -63,7 +63,7 @@ public class CameraPitchController {
     private static float   prevHealth  = -1.0F;
 
     // ============================================================
-    //   ОСНОВНОЙ ТИК
+    //   РћРЎРќРћР’РќРћР™ РўРРљ
     // ============================================================
 
     public static void tick() {
@@ -91,12 +91,11 @@ public class CameraPitchController {
             boolean onGround = player.onGround();
             boolean inWater  = player.isInWater()
                     || player.isUnderWater()
-                    || player.isInWaterOrBubble()
                     || player.isSwimming();
             double  motionY  = player.getDeltaMovement().y;
             double  posY     = player.getY();
 
-            // ========== УДАР (Зависит от MINING_INERTIA) ==========
+            // ========== РЈР”РђР  (Р—Р°РІРёСЃРёС‚ РѕС‚ MINING_INERTIA) ==========
             boolean swinging = player.swinging;
             if (ClientConfig.MINING_INERTIA_ENABLED.get() && ClientConfig.MINING_INERTIA_STRENGTH.get() > 0.0) {
                 float miningStr = ClientConfig.MINING_INERTIA_STRENGTH.get().floatValue();
@@ -106,7 +105,7 @@ public class CameraPitchController {
             }
             wasSwinging = swinging;
 
-            // ========== УРОН (Зависит от FALL_SHAKE) ==========
+            // ========== РЈР РћРќ (Р—Р°РІРёСЃРёС‚ РѕС‚ FALL_SHAKE) ==========
             float curHealth = player.getHealth();
             if (prevHealth < 0) prevHealth = curHealth;
             if (ClientConfig.FALL_SHAKE_ENABLED.get() && ClientConfig.FALL_SHAKE_STRENGTH.get() > 0.0) {
@@ -120,10 +119,10 @@ public class CameraPitchController {
             }
             prevHealth = curHealth;
 
-            // ========== ИСПОЛЬЗОВАНИЕ ПРЕДМЕТА (Зависит от ITEM_ANIMATIONS) ==========
+            // ========== РРЎРџРћР›Р¬Р—РћР’РђРќРР• РџР Р•Р”РњР•РўРђ (Р—Р°РІРёСЃРёС‚ РѕС‚ ITEM_ANIMATIONS) ==========
             if (player.isUsingItem() && ClientConfig.ITEM_ANIMATIONS_ENABLED.get()) {
                 ItemStack using = player.getUseItem();
-                UseAnim anim = using.getUseAnimation();
+                ItemUseAnimation anim = using.getUseAnimation();
                 int kind = getUseKind(using, anim);
 
                 if (kind != 0) {
@@ -146,7 +145,7 @@ public class CameraPitchController {
                 useTickCounter = 0;
             }
 
-            // ========== ОТСЛЕЖИВАНИЕ ПОЛЁТА ==========
+            // ========== РћРўРЎР›Р•Р–РР’РђРќРР• РџРћР›РЃРўРђ ==========
             if (!onGround && !inWater) {
                 if (!tracking) {
                     tracking = true;
@@ -155,22 +154,22 @@ public class CameraPitchController {
                 }
             }
 
-            // Получаем силу падения/прыжков из конфига
+            // РџРѕР»СѓС‡Р°РµРј СЃРёР»Сѓ РїР°РґРµРЅРёСЏ/РїСЂС‹Р¶РєРѕРІ РёР· РєРѕРЅС„РёРіР°
             boolean doFall = ClientConfig.FALL_SHAKE_ENABLED.get() && ClientConfig.FALL_SHAKE_STRENGTH.get() > 0.0;
             float fallStr = doFall ? ClientConfig.FALL_SHAKE_STRENGTH.get().floatValue() : 0.0F;
 
-            // ========== ПРЫЖОК ==========
+            // ========== РџР Р«Р–РћРљ ==========
             if (wasOnGround && !onGround && motionY > 0.1) {
                 if (doFall) applySpringImpulse(1.0F * fallStr);
             }
 
-            // ========== ПРИЗЕМЛЕНИЕ ==========
+            // ========== РџР РР—Р•РњР›Р•РќРР• ==========
             if (!wasOnGround && onGround) {
                 if (doFall) handleLanding(player, posY, fallStr);
                 tracking = false;
             }
 
-            // ========== ВХОД В ВОДУ ==========
+            // ========== Р’РҐРћР” Р’ Р’РћР”РЈ ==========
             if (!wasInWater && inWater && prevMotionY < -0.2) {
                 if (doFall) {
                     float splash = (float) Math.min(Math.abs(prevMotionY) * 4.0F, 3.0F);
@@ -179,22 +178,22 @@ public class CameraPitchController {
                 tracking = false;
             }
 
-            // ========== ВЫХОД ИЗ ВОДЫ ==========
+            // ========== Р’Р«РҐРћР” РР— Р’РћР”Р« ==========
             if (wasInWater && !inWater) {
                 if (doFall) applySpringImpulse(0.75F * fallStr);
             }
 
-            // ========== ШАГ ПРУЖИНЫ ==========
+            // ========== РЁРђР“ РџР РЈР–РРќР« ==========
             stepSpring();
 
-            // ========== УДАРЫ И ИСПОЛЬЗОВАНИЕ ==========
+            // ========== РЈР”РђР Р« Р РРЎРџРћР›Р¬Р—РћР’РђРќРР• ==========
             attackPitch  += (attackTarget - attackPitch) * 0.18F;
             attackTarget *= 0.82F;
 
             usePitch  += (useTarget - usePitch) * 0.22F;
             useTarget *= 0.93F;
 
-            // ========== ПЛАВАНИЕ (Зависит от MOVEMENT_INTENSITY) ==========
+            // ========== РџР›РђР’РђРќРР• (Р—Р°РІРёСЃРёС‚ РѕС‚ MOVEMENT_INTENSITY) ==========
             if (inWater && player.isSwimming() && ClientConfig.MOVEMENT_ANIMATIONS_ENABLED.get() && ClientConfig.MOVEMENT_INTENSITY.get() > 0.0) {
                 float moveStr = ClientConfig.MOVEMENT_INTENSITY.get().floatValue();
                 Vec3 v = player.getDeltaMovement();
@@ -206,7 +205,7 @@ public class CameraPitchController {
                 }
 
                 float amplitude  = (float) Math.min(horizSpeed * 12.5F, 4.0F);
-                // Умножаем цель плавания на ползунок ходьбы
+                // РЈРјРЅРѕР¶Р°РµРј С†РµР»СЊ РїР»Р°РІР°РЅРёСЏ РЅР° РїРѕР»Р·СѓРЅРѕРє С…РѕРґСЊР±С‹
                 float swimTarget = (float) Math.sin(swimPhase) * amplitude * moveStr;
                 swimPitch += (swimTarget - swimPitch) * 0.20F;
             } else {
@@ -214,7 +213,7 @@ public class CameraPitchController {
                 swimPhase = 0.0F;
             }
 
-            // ========== ИТОГ ==========
+            // ========== РРўРћР“ ==========
             prevPitch = currentPitch;
             currentPitch = springPos + attackPitch + swimPitch + usePitch;
 
@@ -233,7 +232,7 @@ public class CameraPitchController {
     }
 
     // ============================================================
-    //   ПРИЗЕМЛЕНИЕ (передаем силу из конфига)
+    //   РџР РР—Р•РњР›Р•РќРР• (РїРµСЂРµРґР°РµРј СЃРёР»Сѓ РёР· РєРѕРЅС„РёРіР°)
     // ============================================================
 
     private static void handleLanding(Player player, double currentY, float strengthMultiplier) {
@@ -274,12 +273,12 @@ public class CameraPitchController {
 
         impulse *= slowFallMul;
 
-        // Умножаем финальный импульс на ползунок из конфига!
+        // РЈРјРЅРѕР¶Р°РµРј С„РёРЅР°Р»СЊРЅС‹Р№ РёРјРїСѓР»СЊСЃ РЅР° РїРѕР»Р·СѓРЅРѕРє РёР· РєРѕРЅС„РёРіР°!
         applySpringImpulse(-impulse * strengthMultiplier);
     }
 
     // ============================================================
-    //   ПРУЖИНА
+    //   РџР РЈР–РРќРђ
     // ============================================================
 
     private static void applySpringImpulse(float deltaVel) {
@@ -303,7 +302,7 @@ public class CameraPitchController {
     }
 
     // ============================================================
-    //   СЛУЖЕБНОЕ
+    //   РЎР›РЈР–Р•Р‘РќРћР•
     // ============================================================
 
     private static void dampAllChannels() {
@@ -331,17 +330,16 @@ public class CameraPitchController {
         useTarget    = 0.0F;
     }
 
-    private static int getUseKind(ItemStack stack, UseAnim anim) {
+    private static int getUseKind(ItemStack stack, ItemUseAnimation anim) {
         if (stack.isEmpty()) return 0;
 
         if (stack.is(Items.MILK_BUCKET)) return 2;
-        if (stack.getItem() instanceof BucketItem && anim == UseAnim.DRINK) return 2;
+        if (stack.getItem() instanceof BucketItem && anim == ItemUseAnimation.DRINK) return 2;
         if (stack.getItem() instanceof PotionItem) return 1;
-        if (anim == UseAnim.DRINK) return 1;
-        if (anim == UseAnim.EAT) return 3;
+        if (anim == ItemUseAnimation.DRINK) return 1;
+        if (anim == ItemUseAnimation.EAT) return 3;
 
-        FoodProperties food = stack.getFoodProperties(null);
-        if (food != null) return 3;
+        if (stack.has(DataComponents.FOOD)) return 3;
 
         return 0;
     }

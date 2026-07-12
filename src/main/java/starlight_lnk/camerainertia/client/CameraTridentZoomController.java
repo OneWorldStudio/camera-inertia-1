@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import starlight_lnk.camerainertia.config.ClientConfig;
 
 /**
@@ -67,8 +66,8 @@ public class CameraTridentZoomController {
 
             // === Определяем, готовится ли Riptide-полёт ===
             // Riptide активен только если есть зачарование И игрок в воде/под дождём
-            int riptideLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.RIPTIDE, using);
-            boolean riptideReady = riptideLevel > 0 && (player.isInWaterOrRain());
+            boolean riptideReady = EnchantmentHelper.getTridentSpinAttackStrength(using, player) > 0.0F
+                    && player.isInWaterOrRain();
 
             // === ЦЕЛЕВАЯ СИЛА ЗУМА ===
             // УМЕНЬШЕНО В 4 РАЗА (* 0.25F), чтобы зум был слабым и комфортным!

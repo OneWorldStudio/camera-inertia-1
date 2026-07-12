@@ -1,17 +1,16 @@
 package starlight_lnk.camerainertia.client;
 
 import starlight_lnk.camerainertia.CameraInertia;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ComputeFovModifierEvent;
-import net.minecraftforge.client.event.ViewportEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
-@Mod.EventBusSubscriber(
+@EventBusSubscriber(
         modid = CameraInertia.MODID,
-        bus = Mod.EventBusSubscriber.Bus.FORGE,
         value = Dist.CLIENT
 )
 public final class ClientForgeEvents {
@@ -19,11 +18,9 @@ public final class ClientForgeEvents {
     private ClientForgeEvents() {}
 
     @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) return;
-
+    public static void onClientTick(ClientTickEvent.Pre event) {
         try {
-            // Тикаем все наши крутые эффекты 1-го лица
+            // РўРёРєР°РµРј РІСЃРµ РЅР°С€Рё РєСЂСѓС‚С‹Рµ СЌС„С„РµРєС‚С‹ 1-РіРѕ Р»РёС†Р°
             CameraPerspectiveController.tick();
             CameraTurnBlur.onClientTick();
             CameraRollController.tick();
@@ -55,16 +52,17 @@ public final class ClientForgeEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onComputeCameraAngles(ViewportEvent.ComputeCameraAngles event) {
         try {
-            // Если мы от 3-го лица, мод ВООБЩЕ ничего не делает! Ванила работает идеально.
+            // Р•СЃР»Рё РјС‹ РѕС‚ 3-РіРѕ Р»РёС†Р°, РјРѕРґ Р’РћРћР‘Р©Р• РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµС‚! Р’Р°РЅРёР»Р° СЂР°Р±РѕС‚Р°РµС‚ РёРґРµР°Р»СЊРЅРѕ.
             if (!CameraViewUtils.isFirstPerson()) return;
 
             float partial = (float) event.getPartialTick();
             float pedestrianMul = CameraVehicleController.getPedestrianMultiplier();
 
-            // 🎥 Складываем все эффекты инерции для 1-ГО ЛИЦА
+            // рџЋҐ РЎРєР»Р°РґС‹РІР°РµРј РІСЃРµ СЌС„С„РµРєС‚С‹ РёРЅРµСЂС†РёРё РґР»СЏ 1-Р“Рћ Р›РР¦Рђ
             float pitchKick =
                     CameraDamageController.getPitchOffset(partial)
                             + CameraMovementController.getPitchOffset(partial) * pedestrianMul
+                            + CameraPitchController.getPitch(partial)
                             + CameraCombatController.getPitchOffset(partial)
                             + CameraEffectsController.getPitchOffset(partial)
                             + CameraVehicleController.getPitchOffset(partial)
@@ -85,6 +83,7 @@ public final class ClientForgeEvents {
             float rollKick =
                     CameraDamageController.getRollOffset(partial)
                             + CameraMovementController.getRollOffset(partial) * pedestrianMul
+                            + CameraRollController.getRoll(partial)
                             + CameraCombatController.getRollOffset(partial)
                             + CameraEffectsController.getRollOffset(partial)
                             + CameraVehicleController.getRollOffset(partial)

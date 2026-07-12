@@ -1,20 +1,21 @@
 package starlight_lnk.camerainertia.config;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import starlight_lnk.camerainertia.CameraInertia;
 
 public abstract class BaseConfigScreen extends Screen {
     protected final Screen previousScreen;
 
-    private static final ResourceLocation LOGO_TEXTURE = new ResourceLocation(CameraInertia.MODID, "textures/gui/logo.png");
+    private static final Identifier LOGO_TEXTURE = Identifier.fromNamespaceAndPath(CameraInertia.MODID, "textures/gui/logo.png");
 
     protected BaseConfigScreen(Component title, Screen previousScreen) {
         super(title);
@@ -22,18 +23,17 @@ public abstract class BaseConfigScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(guiGraphics);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 
-        // ПРОПОРЦИИ И ОТСТУПЫ ЛОГОТИПА
+        // РџР РћРџРћР Р¦РР Р РћРўРЎРўРЈРџР« Р›РћР“РћРўРРџРђ
         int logoWidth = 150;
-        int logoHeight = 50; // Идеальная пропорция для 370x123
+        int logoHeight = 50; // РРґРµР°Р»СЊРЅР°СЏ РїСЂРѕРїРѕСЂС†РёСЏ РґР»СЏ 370x123
         int logoX = (this.width - logoWidth) / 2;
-        int logoY = 10;      // Отступ от верхнего края экрана
+        int logoY = 10;      // РћС‚СЃС‚СѓРї РѕС‚ РІРµСЂС…РЅРµРіРѕ РєСЂР°СЏ СЌРєСЂР°РЅР°
 
-        guiGraphics.blit(LOGO_TEXTURE, logoX, logoY, 0, 0, logoWidth, logoHeight, logoWidth, logoHeight);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, LOGO_TEXTURE, logoX, logoY, 0.0F, 0.0F, logoWidth, logoHeight, logoWidth, logoHeight);
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -54,11 +54,11 @@ public abstract class BaseConfigScreen extends Screen {
     }
 
     public class ConfigSlider extends AbstractSliderButton {
-        private final ForgeConfigSpec.DoubleValue configValue;
+        private final ModConfigSpec.DoubleValue configValue;
         private final String translationKey;
         private final double min, max;
 
-        public ConfigSlider(int x, int y, int w, int h, ForgeConfigSpec.DoubleValue configValue, double min, double max, String translationKey) {
+        public ConfigSlider(int x, int y, int w, int h, ModConfigSpec.DoubleValue configValue, double min, double max, String translationKey) {
             super(x, y, w, h, Component.empty(), 0.0);
             this.configValue = configValue;
             this.translationKey = translationKey;

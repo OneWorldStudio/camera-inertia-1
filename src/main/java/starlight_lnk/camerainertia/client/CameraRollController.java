@@ -53,7 +53,7 @@ public class CameraRollController {
 
             float strafe = 0.0F;
             if (mc.player.input != null) {
-                strafe = mc.player.input.leftImpulse;
+                strafe = mc.player.input.getMoveVector().x;
                 if (Float.isNaN(strafe) || Float.isInfinite(strafe)) strafe = 0.0F;
             }
 
